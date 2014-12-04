@@ -53,6 +53,9 @@ SUBLIMERL_COMPLETIONS = {
 class SublimErlModuleNameCompletions():
 
     def set_completions(self):
+        '''
+        Generate Erlang-Libs.sublime-completions file.
+        '''
         plugin_path = get_plugin_path()
         # if errors occurred
         if plugin_path == None:
@@ -95,7 +98,17 @@ class SublimErlModuleNameCompletions():
 # completions
 class SublimErlCompletions(SublimErlProjectLoader):
 
+    def get_completion_filename(self, code_type):
+        if code_type == 'erlang_libs':
+            return 'Erlang-Libs'
+        elif code_type == 'current_project':
+            return 'Current-Project'
+
+
     def get_available_completions(self):
+        '''
+        Load erlang lib completions and project completions.
+        '''
         # load current erlang libs
         if SUBLIMERL_COMPLETIONS['erlang_libs']['completions'] == {}:
             self.load_erlang_lib_completions()
@@ -105,12 +118,6 @@ class SublimErlCompletions(SublimErlProjectLoader):
         # generate & load project files
         # self.generate_project_completions()
 
-    def get_completion_filename(self, code_type):
-        if code_type == 'erlang_libs':
-            return 'Erlang-Libs'
-        elif code_type == 'current_project':
-            return 'Current-Project'
-
     def load_erlang_lib_completions(self):
         self.load_completions('erlang_libs')
 
@@ -118,6 +125,9 @@ class SublimErlCompletions(SublimErlProjectLoader):
         self.load_completions('current_project')
 
     def load_completions(self, code_type):
+        '''
+        Load completions from pickled file(Erlang-Libs.disasm).
+        '''
         # check lock
         global SUBLIMERL_COMPLETIONS
         if SUBLIMERL_COMPLETIONS[code_type]['load_in_progress'] == True:
@@ -149,6 +159,9 @@ class SublimErlCompletions(SublimErlProjectLoader):
         SublimErlThread().start()
 
     def generate_erlang_lib_completions(self):
+        '''
+        Generate erlang lib completions and store it into Erlang-Libs.disasm.
+        '''
         # check lock
         global SUBLIMERL_COMPLETIONS
         if SUBLIMERL_COMPLETIONS['erlang_libs']['rebuilt'] == True:

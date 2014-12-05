@@ -33,6 +33,7 @@ class SublimErlLibParser():
 	def __init__(self):
 		# compile default regexes
 		self.regex = {
+			'export_all': re.compile(r'^\s*-\s*compile\s*\(\s*\[\s*export_all\s*\]\s*\)\s*\.', re.MULTILINE + re.DOTALL),
 			'all': re.compile(r"(.*)", re.MULTILINE),
 			'export_section': re.compile(r"^\s*-\s*export\s*\(\s*\[\s*([^\]]*)\s*\]\s*\)\s*\.", re.DOTALL + re.MULTILINE),
 			'varname': re.compile(r"^[A-Z][a-zA-Z0-9_]*$"),
@@ -44,6 +45,25 @@ class SublimErlLibParser():
 	def strip_comments(self, code):
 		# strip comments but keep the same character count
 		return re.sub(re.compile(r"%(.*)\n"), lambda m: (len(m.group(0)) - 1) * ' ' + '\n', code)
+
+	def get_all_functions(self, module):
+		'''
+		Get all functions in module.
+		'''
+		regex = re.compile(r"^\s*([a-z_@]+)\((.*)\)\s*->", re.MULTILINE)
+		result = regex.findall(module)
+		funcs = [i[0] for i in result]
+		params = [i[1] for i in result]
+		param_count = []
+		for p in params:
+			if p.strip(' ') == '':
+				param_count.append('/0')
+			else:
+				param_count.append('/'+str(p.count(',')+1))
+		funcs = [a+b for a,b in zip(funcs, param_count)]
+		# remove duplicated funcs
+		funcs = list(set(funcs))
+		return funcs
 
 	def generate_completions(self, starting_dir, dest_file_base):
 		# init
@@ -65,12 +85,14 @@ class SublimErlLibParser():
 					if not (True in [filepath.find(rel_dir) != -1 for rel_dir in rel_dirs]):
 						# not in a release directory, get module name
 						module_name, module_ext = os.path.splitext(filename)
+						print 'reading:' + filepath
 						# get module content
 						f = open(filepath, 'r')
 						module = self.strip_comments(f.read())
 						f.close()
 						# get completions
 						module_completions, line_numbers = self.get_completions(module)
+						print module_completions
 						if len(module_completions) > 0:
 							# set disasm
 							disasms[module_name] = sorted(module_completions, key=lambda k: k[0])
@@ -115,16 +137,29 @@ class SublimErlLibParser():
 
 		all_completions = []
 		all_line_numbers = []
-		for m in self.regex['export_section'].finditer(module):
-			export_section = m.groups()[0]
-			if export_section:
+		# if compile([export_all]) is defined, then generate completions for all functions.
+		if self.regex['export_all'].search(module):
+			all_functions = self.get_all_functions(module)
+			for m in all_functions:
 				# get list of exports
-				exports = self.get_code_list(export_section)
+				exports = self.get_code_list(m)
 				if len(exports) > 0:
 					# add to existing completions
 					completions, line_numbers = self.generate_module_completions(module, exports)
 					all_completions.extend(completions)
 					all_line_numbers.extend(line_numbers)
+		else:
+			for m in self.regex['export_section'].finditer(module):
+				export_section = m.groups()[0]
+				if export_section:
+					# get list of exports
+					exports = self.get_code_list(export_section)
+					if len(exports) > 0:
+						# add to existing completions
+						completions, line_numbers = self.generate_module_completions(module, exports)
+						all_completions.extend(completions)
+						all_line_numbers.extend(line_numbers)
+
 		# return all_completions
 		return (all_completions, all_line_numbers)
 

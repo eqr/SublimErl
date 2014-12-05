@@ -104,7 +104,6 @@ class SublimErlCompletions(SublimErlProjectLoader):
         elif code_type == 'current_project':
             return 'Current-Project'
 
-
     def get_available_completions(self):
         '''
         Load erlang lib completions and project completions.
@@ -116,7 +115,7 @@ class SublimErlCompletions(SublimErlProjectLoader):
         # [i.e. needs sublime text restart to regenerate erlang completions]
         self.generate_erlang_lib_completions()
         # generate & load project files
-        # self.generate_project_completions()
+        self.generate_project_completions()
 
     def load_erlang_lib_completions(self):
         self.load_completions('erlang_libs')
@@ -245,8 +244,7 @@ class SublimErlCompletions(SublimErlProjectLoader):
                 this.load_current_project_completions()
                 this.status("Finished regenerating Project completions.")
 
-        # SublimErlThread().start()
-        # do not generate project completions now
+        SublimErlThread().start()
 
 
 # listener

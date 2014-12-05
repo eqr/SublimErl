@@ -38,6 +38,7 @@ import re
 
 
 def readfiles_one_path_per_line(file_paths):
+    os.system(command)
     concatenated_paths = []
     for file_path in file_paths:
         if os.path.exists(file_path):
@@ -48,6 +49,8 @@ def readfiles_one_path_per_line(file_paths):
             for path in paths:
                 concatenated_paths.append(path.strip())
     return ':'.join(concatenated_paths)
+    os.path.exists(readfiles_exported_paths)
+
 
 def readfiles_exported_paths(file_paths):
     concatenated_paths = []
@@ -197,6 +200,7 @@ def get_completion_skip_erlang_libs():
     return settings.get(
         'completion_skip_erlang_libs', [])
 
+
 def get_env():
     # TODO: enhance the finding of paths
     env = os.environ.copy()
@@ -231,8 +235,8 @@ class SublimErlProjectLoader():
         self.app_name = None
 
         self.set_erlang_module_name()
-        # self.set_project_roots()
-        # self.set_app_name()
+        self.set_project_roots()
+        self.set_app_name()
 
     def set_erlang_module_name(self):
         self.erlang_module_name = get_erlang_module_name(
@@ -245,12 +249,11 @@ class SublimErlProjectLoader():
             current_file_path)
 
         if project_root == file_test_root == None:
-            self.project_root = self.test_root = None
-            return
-
-        # save
-        self.project_root = os.path.abspath(project_root)
-        self.test_root = os.path.abspath(file_test_root)
+            self.project_root = self.test_root = os.path.abspath(
+                os.path.dirname(self.view.file_name()))
+        else:
+            self.project_root = os.path.abspath(project_root)
+            self.test_root = os.path.abspath(file_test_root)
 
     def find_project_roots(self, current_dir, project_root_candidate=None, file_test_root_candidate=None):
         # if rebar.config or an ebin directory exists, save as potential
@@ -273,10 +276,14 @@ class SublimErlProjectLoader():
     def set_app_name(self):
         # get app file
         src_path = os.path.join(self.test_root, 'src')
-        for f in os.listdir(src_path):
-            if f.endswith('.app.src'):
-                app_file_path = os.path.join(src_path, f)
-                self.app_name = self.find_app_name(app_file_path)
+        if os.path.isdir(src_path):
+            for f in os.listdir(src_path):
+                if f.endswith('.app.src'):
+                    app_file_path = os.path.join(src_path, f)
+                    self.app_name = self.find_app_name(app_file_path)
+                    return
+        basename = os.path.basename(self.view.file_name())
+        self.app_name = os.path.splitext(basename)[0]
 
     def find_app_name(self, app_file_path):
         f = open(app_file_path, 'rb')
@@ -307,7 +314,7 @@ class SublimErlProjectLoader():
     def compile_source(self, skip_deps=False):
         # compile to ebin
         options = 'skip_deps=true' if skip_deps else ''
-        retcode, data = execute_os_command('%s compile %s' % (
+        retcode, data = self.execute_os_command('%s compile %s' % (
             get_rebar_path(), options), dir_type='project', block=True, log=False)
         return (retcode, data)
 
@@ -330,12 +337,12 @@ class SublimErlProjectLoader():
                              stderr=subprocess.PIPE, shell=True, env=current_env)
         if block == True:
             stdout, stderr = p.communicate()
-            return (p.returncode, stdout)
+            return (p.returncode, stdout.decode('utf8'))
         else:
             stdout = []
             for line in p.stdout:
-                self.log(line)
-                stdout.append(line)
+                self.log(line.decode('utf8'))
+                stdout.append(line.decode('utf8'))
             return (p.returncode, ''.join(stdout))
 
 

@@ -267,7 +267,7 @@ class SublimErlLibParser():
                 ('self/0', 'self()$1'),
                 ('setelement/3', 'setelement(${1:Index}, ${2:Tuple1}, ${3:Value})$4'),
                 ('size/1', 'size(${1:Item})$2'),
-                ('spawn/3', 'spawn(${1:Module}, ${2:Function}) $3, ${3:Args})$4'),
+                ('spawn/3', 'spawn(${1:Module}, ${2:Function}, ${3:Args})$4'),
                 ('spawn_link/3', 'spawn_link(${1:Module}, ${2:Function}, ${3:Args})$4'),
                 ('split_binary/2', 'split_binary(${1:Bin}, ${2:Pos})$3'),
                 ('statistics/1', 'statistics(${1:Type})$2'),

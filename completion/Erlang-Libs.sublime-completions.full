@@ -1997,7 +1997,7 @@
 { "trigger": "self/0", "contents": "self()$1" },
 { "trigger": "setelement/3", "contents": "setelement(${1:Index}, ${2:Tuple1}, ${3:Value})$4" },
 { "trigger": "size/1", "contents": "size(${1:Item})$2" },
-{ "trigger": "spawn/3", "contents": "spawn(${1:Module}, ${2:Function}) $3, ${3:Args})$4" },
+{ "trigger": "spawn/3", "contents": "spawn(${1:Module}, ${2:Function}, ${3:Args})$4" },
 { "trigger": "spawn_link/3", "contents": "spawn_link(${1:Module}, ${2:Function}, ${3:Args})$4" },
 { "trigger": "split_binary/2", "contents": "split_binary(${1:Bin}, ${2:Pos})$3" },
 { "trigger": "statistics/1", "contents": "statistics(${1:Type})$2" },

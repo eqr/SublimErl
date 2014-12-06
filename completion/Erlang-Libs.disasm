@@ -17307,7 +17307,7 @@ p10408
 tp10409
 a(S'spawn/3'
 p10410
-S'spawn(${1:Module}, ${2:Function}) $3, ${3:Args})$4'
+S'spawn(${1:Module}, ${2:Function}, ${3:Args})$4'
 p10411
 tp10412
 a(S'spawn/4'

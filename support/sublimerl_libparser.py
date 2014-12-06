@@ -261,7 +261,7 @@ class SublimErlLibParser():
                 ('processes/0', 'processes()$1'),
                 ('purge_module/1', 'purge_module(${1:Module})$2'),
                 ('put/2', 'put(${1:Key}, ${2:Val})$3'),
-                ('register/2', 'put(${1:RegName}, ${2:PidOrPort})$3'),
+                ('register/2', 'register(${1:RegName}, ${2:PidOrPort})$3'),
                 ('registered/0', 'registered()$1'),
                 ('round/1', 'round(${1:Number})$2'),
                 ('self/0', 'self()$1'),

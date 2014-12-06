@@ -10,3 +10,5 @@ Current-Project.sublime-completions
 .Spotlight-V100
 .Trashes
 *.swp
+
+*.bak

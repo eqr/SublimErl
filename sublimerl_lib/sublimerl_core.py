@@ -38,7 +38,6 @@ import re
 
 
 def readfiles_one_path_per_line(file_paths):
-    os.system(command)
     concatenated_paths = []
     for file_path in file_paths:
         if os.path.exists(file_path):
@@ -49,7 +48,6 @@ def readfiles_one_path_per_line(file_paths):
             for path in paths:
                 concatenated_paths.append(path.strip())
     return ':'.join(concatenated_paths)
-    os.path.exists(readfiles_exported_paths)
 
 
 def readfiles_exported_paths(file_paths):

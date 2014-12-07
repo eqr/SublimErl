@@ -1991,7 +1991,7 @@
 { "trigger": "processes/0", "contents": "processes()$1" },
 { "trigger": "purge_module/1", "contents": "purge_module(${1:Module})$2" },
 { "trigger": "put/2", "contents": "put(${1:Key}, ${2:Val})$3" },
-{ "trigger": "register/2", "contents": "put(${1:RegName}, ${2:PidOrPort})$3" },
+{ "trigger": "register/2", "contents": "register(${1:RegName}, ${2:PidOrPort})$3" },
 { "trigger": "registered/0", "contents": "registered()$1" },
 { "trigger": "round/1", "contents": "round(${1:Number})$2" },
 { "trigger": "self/0", "contents": "self()$1" },

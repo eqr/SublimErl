@@ -12,3 +12,5 @@ Current-Project.sublime-completions
 *.swp
 
 *.bak
+
+completion/

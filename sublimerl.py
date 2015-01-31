@@ -12,8 +12,8 @@ SUBLIMERL_VERSION = '0.5.1'
 def plugin_loaded():
     """Called directly from sublime on plugin load
     """
-    package_folder = os.path.dirname(__file__)
-    if os.path.exists(os.path.join(package_folder, 'sublimerl_lib')):
-        sys.path.append(os.path.join(package_folder, 'sublimerl_lib'))
+    # package_folder = os.path.dirname(__file__)
+    # if os.path.exists(os.path.join(package_folder, 'sublimerl_lib')):
+    #     sys.path.append(os.path.join(package_folder, 'sublimerl_lib'))
 
     SublimErlModuleNameCompletions().set_completions_threaded()

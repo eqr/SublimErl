@@ -365,6 +365,8 @@ class SublimErlTextCommand(sublime_plugin.TextCommand):
         # context menu
         if self._context_match():
             return self.show_contextual_menu()
+        else:
+            return False
 
     def show_contextual_menu(self):
         # can be overridden

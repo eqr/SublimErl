@@ -113,15 +113,14 @@ split_prev_block(Tokens, Line) ->
     {lists:reverse(PrevToks3), NextToks}.
 
 category(Token) ->
-    {category, Cat} = erl_scan:token_info(Token, category),
-    Cat.
+    element(1, Token).
 
 line(Token) ->
-    {line, Line} = erl_scan:token_info(Token, line),
+    {Line, _} = element(2, Token),
     Line.
 
 column(Token) ->
-    {column, Col} = erl_scan:token_info(Token, column),
+    {_, Col} = element(2, Token),
     Col.
 
 indentation_between([], _) ->

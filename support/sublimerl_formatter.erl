@@ -41,16 +41,16 @@
 
 % command line exposure
 main([FilePath]) ->
-	Lines = read_file(FilePath),
-	Formatted = source_indentation(Lines),
-	io:format("~s", [Formatted]);
+    Lines = read_file(FilePath),
+    Formatted = source_indentation(Lines),
+    io:format("~s", [Formatted]);
 
 main(_) ->
-	halt(1).
+    halt(1).
 
 read_file(File) ->
     {ok, FileDev} = file:open(File, [raw, read, read_ahead]),
-	Lines = read_file([],FileDev),
+    Lines = read_file([],FileDev),
     file:close(FileDev),
     Lines.
 
@@ -64,7 +64,7 @@ read_file(Lines, FileDev) ->
 
 source_indentation(Lines) ->
     try
-    	Source = lists:flatten(Lines),
+        Source = lists:flatten(Lines),
         Tokens = tokenize_source(Source),
         lists:flatten(source_indentation(Tokens, Lines, 1, []))
     catch
@@ -73,7 +73,7 @@ source_indentation(Lines) ->
     end.
 
 source_indentation(_Tokens, [], _Pos, FormattedLines) ->
-	lists:reverse(FormattedLines);
+    lists:reverse(FormattedLines);
 source_indentation(Tokens, [Line|Lines], Pos, FormattedLines) ->
     try
         % compute indent for line in Pos
@@ -81,7 +81,7 @@ source_indentation(Tokens, [Line|Lines], Pos, FormattedLines) ->
         {IndentTab, _IndentCol} = indentation_between(PrevToks, NextToks),
         % reformat line
         NewLine = string:copies("\t", IndentTab) ++
-        	re:replace(Line, "\\A[ \t]+", "", [{return, list}]),
+            re:replace(Line, "\\A[ \t]+", "", [{return, list}]),
         source_indentation(Tokens, Lines, Pos + 1, [NewLine|FormattedLines])
     catch
         throw:scan_error ->
@@ -113,15 +113,14 @@ split_prev_block(Tokens, Line) ->
     {lists:reverse(PrevToks3), NextToks}.
 
 category(Token) ->
-    {category, Cat} = erl_scan:token_info(Token, category),
-    Cat.
+    element(1, Token).
 
 line(Token) ->
-    {line, Line} = erl_scan:token_info(Token, line),
+    {Line, _} = element(2, Token),
     Line.
 
 column(Token) ->
-    {column, Col} = erl_scan:token_info(Token, column),
+    {_, Col} = element(2, Token),
     Col.
 
 indentation_between([], _) ->
